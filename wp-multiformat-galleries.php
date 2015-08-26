@@ -16,6 +16,8 @@ define( 'WPMFG_PATH', dirname( __FILE__ ) . '/' );
 define( 'WPMFG_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WPMFG_CLASS_DIR', WPMFG_PATH . 'classes/' );
 
+new WP_Multiformat_Galleries();
+
 class WP_Multiformat_Galleries {
 
 	public function __construct() {
@@ -53,26 +55,30 @@ class WP_Multiformat_Galleries {
 		}
 
 		$asset_ids = explode( ',', $attributes['ids'] );
-		$media_assets = new WP_Query( array(
-			'post__in'                  => $asset_ids,
-			'post_type'                 => 'attachment',
-			'no_found_rows'             => true,
-			'update_post_term_cache'    => false,
-			'posts_per_page'            => apply_filters( 'wpmfg/posts-per-page', 100 ),
-		) );
 
-		if( ! $media_assets->have_posts() ) {
+		if( empty( $asset_ids ) ) {
 			return $output;
 		}
 
-		$output = '<ul class="slides">';
-		while( $media_assets->have_posts() ) {
+		$output = '<span class="cycle-prev" id="prev">Previous</span>';
+		$output .= '<span class="cycle-next" id="next">Next</span>';
 
-			$media_assets->the_post();
+		$output .= '<ul class="slides cycle-slideshow"
+			data-cycle-fx="scrollHorz"
+    		data-cycle-slides="> li"
+    		data-cycle-prev="#prev"
+        	data-cycle-next="#next"
+    		>';
 
+		foreach( $asset_ids as $asset_id ) {
+
+			$image_url = wp_get_attachment_url( $asset_id );
+			$caption = 'This is a caption';
+			$credit = get_post_meta( $asset_id, '_wp_attachment_image_alt', true );
+
+			$output .= $this->_template( $image_url, $credit, $caption );
 
 		}
-
 		$output .= '</ul>';
 		return apply_filters( 'wpmfg/carousel-render-template', $output );
 	}
