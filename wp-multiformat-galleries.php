@@ -68,11 +68,22 @@ class WP_Multiformat_Galleries {
     		data-cycle-slides="> li"
     		data-cycle-prev="#prev"
         	data-cycle-next="#next"
+        	data-cycle-carousel-fluid="true"
+        	data-cycle-carousel-visible="3"
+        	data-cycle-auto-height="3:2"
+        	data-cycle-fx="scrollHorz"
+        	data-cycle-tile-vertical="false"
         >';
 
 		foreach( $asset_ids as $asset_id ) {
 
-			$image_url = wp_get_attachment_url( $asset_id );
+			$image_url = wp_get_attachment_image_src( $asset_id, 'large' );
+			$image_url = ( isset( $image_url[0] ) ) ? $image_url[0] : false;
+
+			if( ! $image_url ) {
+				continue;
+			}
+
 			$caption = 'This is a caption';
 			$credit = get_post_meta( $asset_id, '_wp_attachment_image_alt', true );
 
@@ -99,12 +110,3 @@ class WP_Multiformat_Galleries {
 		return apply_filters( 'wpmfg/single-image-render-template', $html );
 	}
 }
-
-/* $attr
-array (
-  'columns' => '5',
-  'ids' => '977,1261,1071,1042,1041,1040,1039,1038,1024,1022,967,963,906,907,904,905,842,827,811,807,771,770,769,768',
-  'orderby' => 'post__in',
-  'include' => '977,1261,1071,1042,1041,1040,1039,1038,1024,1022,967,963,906,907,904,905,842,827,811,807,771,770,769,768',
-)
-*/
