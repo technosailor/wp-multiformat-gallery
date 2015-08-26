@@ -60,15 +60,15 @@ class WP_Multiformat_Galleries {
 			return $output;
 		}
 
-		$output = '<span class="cycle-prev" id="prev">Previous</span>';
-		$output .= '<span class="cycle-next" id="next">Next</span>';
+		$output = sprintf( '<span class="cycle-prev" id="prev">%s</span>', apply_filters('wpmfg/previous-icon', '<span class="dashicons dashicons-arrow-left"></span>' ) );
+		$output .= sprintf( '<span class="cycle-next" id="next">%s</span></span>', apply_filters( 'wpmfg/next-icon', '<span class="dashicons dashicons-arrow-right">' ) );
 
 		$output .= '<ul class="slides cycle-slideshow"
 			data-cycle-fx="scrollHorz"
     		data-cycle-slides="> li"
     		data-cycle-prev="#prev"
         	data-cycle-next="#next"
-    		>';
+        >';
 
 		foreach( $asset_ids as $asset_id ) {
 
